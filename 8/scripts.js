@@ -6,7 +6,7 @@
 const asyncTimeout = (timeout) => new Promise(res => {
     setTimeout(() => {
         res();
-    },timeout);
+    }, timeout);
 });
 
 
