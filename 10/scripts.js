@@ -13,22 +13,30 @@ const asyncTimeout = (timeout) => new Promise(res => {
   },timeout);
 });
 
-function promiseStack(arr, num = 1) {
-  return new Promise((res, rej) => {
+function promiseStack(promises, count = 1) {
+  return new Promise((resolve, reject) => {
+    const results = [];
+    let running = 0;
     let index = 0;
 
     const executeNext = () => {
-      if (index >= arr.length) {
-        res();
-        return;
+      if (running < count && index < promises.length) {
+        running++;
+        promises[index]()
+          .then((result) => {
+            results[index] = result;
+            running--;
+            if (index < promises.length) {
+              executeNext();
+            }
+            if (running === 0 && index === promises.length) {
+              resolve(results);
+            }
+          })
+          .catch(reject);
+        index++;
+        executeNext();
       }
-
-      const current = arr[index];
-      index++;
-
-      Promise.resolve(current())
-        .then(executeNext)
-        .catch(rej);
     };
 
     executeNext();
@@ -44,5 +52,3 @@ promiseStack([
   () => asyncTimeout(1000).then(() => console.log(3)),
   () => asyncTimeout(3000).then(() => console.log(4)),
 ], 2);
-
-
