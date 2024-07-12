@@ -2,7 +2,7 @@
 // Если искомое значение отсутствует, 
 // необходимо вернуть значение -1. Найдите 11, 1 и 25 узел из дерева.
 
-const tree = [
+const tree = 
     {
         node: 1,
         children: [
@@ -64,42 +64,24 @@ const tree = [
             ],
         },
         ],
-    },
-];
+    };
 
 
-const recursive = (tree) => {
-    let sum = 0;
-    tree.forEach(node => {
-        sum += node.node;
-
-        if (!node.children) {
-            return node.node
+    const findNode = (tree, target) => {
+        if (!tree) {
+            return -1;
         }
 
-        sum += recursive(node.children);
-    })
+        if (tree.node === target) return tree.node;
 
-    return sum;
-}
+        for (let i = 0; i < tree.children.length; i++) {
+            const result = findNode(tree.children[i], target);
+            if (result != -1){
+                return result;
+            }
+        }
 
-const iteration = (tree) => {
-    if (!tree.length) {
         return -1;
     }
-    let sum = 0;
-    let stack = [];
-    tree.forEach(node => stack.push(node));
-    while (stack.length) {
-        const node = stack.pop()
-        sum += node.node;
-        if (node.children) {
-            node.children.forEach(child => stack.push(child));
-        }
-    }
-    return sum;
-}
 
-
-console.log(recursive(tree));
-console.log(iteration(tree));
+    console.log(findNode(tree, 1));
